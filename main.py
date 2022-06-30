@@ -8,6 +8,8 @@ from Sensores import NTC
 
 class Scope:
     def __init__(self, variavel):
+
+        self.controle_deslizante_periodo = None
         self.amplitude_slider = None
         self.y0_slider = None
         self.periodo_slider = None
@@ -24,7 +26,7 @@ class Scope:
         self.ax.set_ylim(20, 30)
         self.ax.set_xlim(0, 10)
         plt.subplots_adjust(left=0.3, bottom=0.25)
-
+        self._controle_deslizantes()
 
     def update(self, data):
         self.ax.figure.canvas.draw()
@@ -39,10 +41,13 @@ class Scope:
         self.time_data = self.time_data
         self.sensor_data = self.sensor_data
 
-        self.ax.set_xlim(self.time_data[-1] - self.periodo_slider.val, self.time_data[-1])
+        self.ax.set_xlim(self.time_data[-1] - self.controle_deslizante_periodo.val, self.time_data[-1])
 
-        self.ax.set_ylim(self.y1_slider.val + self.y2_slider.val - (self.amplitude1_slider.val + self.amplitude2_slider.val),
-                         self.y1_slider.val + self.y2_slider.val + (self.amplitude1_slider.val + self.amplitude2_slider.val))
+        self.ax.set_ylim(
+            self.controle_deslizante_y_1.val + self.controle_deslizante_y_2.val -
+            (self.controle_deslizante_amplitude_1.val + self.controle_deslizante_amplitude_2.val),
+            self.controle_deslizante_y_1.val + self.controle_deslizante_y_2.val +
+            (self.controle_deslizante_amplitude_1.val + self.controle_deslizante_amplitude_2.val))
 
         self.line.set_data(self.time_data, self.sensor_data)
         self.ax.grid(True)
@@ -50,52 +55,20 @@ class Scope:
 
         return self.line,
 
+    def _cria_controle_deslizante(self, area=None, rotulo='', valor_minimo=0, valor_maximo=10, valor_inical=1, passo=1,
+                                  orientacao='vertical'):
+        return Slider(ax=plt.axes(area), label=rotulo, valmin=valor_minimo, valmax=valor_maximo, valinit=valor_inical,
+                      valstep=passo, orientation=orientacao)
+
+    def _controle_deslizantes(self):
+        self.controle_deslizante_periodo = self._cria_controle_deslizante([0.4, 0.1, 0.45, 0.03], 'Período (s)', 1, 600,
+                                                                          1, 1, 'horizontal')
+        self.controle_deslizante_y_1 = self._cria_controle_deslizante([0.05, 0.25, 0.0225, 0.63], 'Y1', 0, 125, 26,1)
+        self.controle_deslizante_y_2 = self._cria_controle_deslizante([0.10, 0.25, 0.0225, 0.63], 'Y2', 0, 0.9, 0, 0.1)
+        self.controle_deslizante_amplitude_1 = self._cria_controle_deslizante([0.15, 0.25, 0.0225, 0.63], 'A1', 0, 10, 1,1)
+        self.controle_deslizante_amplitude_2 = self._cria_controle_deslizante([0.2, 0.25, 0.0225, 0.63], 'A2', 0, 1, 0.1, 0.1)
+
     def iniciar_visualizacao(self):
-        ax_periodo = plt.axes([0.4, 0.1, 0.45, 0.03])
-        self.periodo_slider = Slider(ax=ax_periodo,label="Período (s)",valmin=1,valmax=600,valinit=1,valstep=1)
-
-        ax_y1 = plt.axes([0.05, 0.25, 0.0225, 0.63])
-        self.y1_slider = Slider(
-            ax=ax_y1,
-            label="Y1",
-            valmin=0,
-            valmax=125,
-            valinit=26,
-            orientation="vertical",
-            valstep=1
-        )
-
-        ax_y2 = plt.axes([0.10, 0.25, 0.0225, 0.63])
-        self.y2_slider = Slider(
-            ax=ax_y2,
-            label="Y2",
-            valmin=0,
-            valmax=0.9,
-            valinit=0,
-            orientation="vertical",
-            valstep=0.1
-        )
-
-        ax_amplitude1 = plt.axes([0.15, 0.25, 0.0225, 0.63])
-        self.amplitude1_slider = Slider(
-            ax=ax_amplitude1,
-            label="A1",
-            valmin=0,
-            valmax=10,
-            valinit=1,
-            orientation="vertical",
-            valstep=1
-        )
-
-        ax_amplitude2 = plt.axes([0.2, 0.25, 0.0225, 0.63])
-        self.amplitude2_slider = Slider(ax=ax_amplitude2,
-            label="A2",
-            valmin=0,
-            valmax=1,
-            valinit=0.1,
-            orientation="vertical",
-            valstep=0.1
-        )
 
         ani = animation.FuncAnimation(fig=self.fig, func=scope.update,
                                       frames=self.variavel, interval=1000,
