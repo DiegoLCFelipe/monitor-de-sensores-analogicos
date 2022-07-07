@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from Sensores import Strategy
+from tratamentodesinal import Strategy
 import numpy as np
 
 
 @dataclass
-class NTC(Strategy):
+class Steinhart(Strategy):
     TEMPERATURA_MINIMA = -40
     TEMPERATURA_MAXIMA = 125
     resistencia: float = 10000

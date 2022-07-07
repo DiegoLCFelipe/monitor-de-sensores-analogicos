@@ -4,7 +4,7 @@ from matplotlib.widgets import Slider, Button
 from matplotlib.lines import Line2D
 
 
-class Scope:
+class Animacao:
     plt.style.use('apresentacao.mplstyle')
 
     def __init__(self, variavel, nome_variavel, **kwargs):
