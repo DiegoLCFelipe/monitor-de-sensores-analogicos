@@ -5,7 +5,7 @@ from matplotlib.lines import Line2D
 
 
 class Animacao:
-    plt.style.use('apresentacao.mplstyle')
+    plt.style.use('design.mplstyle')
 
     def __init__(self, variavel, nome_variavel, **kwargs):
         self.variavel = variavel
