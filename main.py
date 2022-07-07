@@ -4,7 +4,7 @@ from Grafico import Scope
 
 termistor = SinalAnalogico(NTC(resistencia=10000, unidade='Celcius'))
 
-configuracao_controles = {'Período mínimo': 0,
+configuracao_controles = {'Período mínimo': 2,
                           'Período máximo': 100,
                           'Y1 mínimo': 0,
                           'Y1 máximo': 50,
