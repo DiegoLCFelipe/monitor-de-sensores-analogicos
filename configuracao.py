@@ -1,4 +1,3 @@
-
 CONROLES ={
     # Controle deslizante período
     'Período mínimo': 2,
